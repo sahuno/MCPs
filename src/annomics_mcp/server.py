@@ -34,8 +34,27 @@ def initialize_r_runner() -> None:
     """Initialize R script runner with default script path."""
     global r_runner
     
-    # Find the R script relative to this file
-    script_path = Path(__file__).parent.parent.parent.parent / "scripts" / "annotate_genomic_segments.R"
+    # Try multiple possible script locations for flexibility
+    possible_paths = [
+        # Docker/production path (working directory is /app)
+        Path("/app/scripts/annotate_genomic_segments.R"),
+        # Development path relative to this file
+        Path(__file__).parent.parent.parent.parent / "scripts" / "annotate_genomic_segments.R",
+        # Relative to current working directory
+        Path("scripts/annotate_genomic_segments.R"),
+        # Absolute path if set via environment
+        Path("./scripts/annotate_genomic_segments.R")
+    ]
+    
+    script_path = None
+    for path in possible_paths:
+        if path.exists():
+            script_path = path
+            break
+    
+    if script_path is None:
+        available_paths = [str(p) for p in possible_paths]
+        raise FileNotFoundError(f"R script not found in any of these locations: {available_paths}")
     
     try:
         r_runner = RScriptRunner(script_path)
