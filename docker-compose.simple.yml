@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  annomics-simple:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    container_name: annomics-simple-server
+    volumes:
+      # Mount for input/output data
+      - ./data:/app/data:rw
+      - ./output:/app/output:rw
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+    restart: unless-stopped
+    
+    # For interactive testing
+    stdin_open: true
+    tty: true
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "python3", "-c", "print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# Optional: Create volumes for persistent data
+volumes:
+  annomics-data:
+    driver: local

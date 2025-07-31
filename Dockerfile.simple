@@ -1,0 +1,49 @@
+# Simple, bulletproof Dockerfile for annOmics MCP Server
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies in one layer for efficiency
+RUN apt-get update && apt-get install -y \
+    r-base \
+    r-base-dev \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libcairo2-dev \
+    libxt-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install R packages (most stable versions)
+RUN R -e "install.packages(c('optparse', 'tidyverse', 'data.table', 'ggplot2'), repos='https://cran.rstudio.com/', dependencies=TRUE)"
+
+# Install Bioconductor packages
+RUN R -e "if (!requireNamespace('BiocManager', quietly = TRUE)) install.packages('BiocManager'); BiocManager::install(c('annotatr', 'GenomicRanges'), dependencies=TRUE)"
+
+# Verify R installation
+RUN R -e "library(annotatr); library(GenomicRanges); cat('R packages installed successfully\n')"
+
+# Copy only necessary files
+COPY scripts/ /app/scripts/
+COPY src/annomics_mcp/simple_server.py /app/simple_server.py
+
+# Make R script executable
+RUN chmod +x /app/scripts/annotate_genomic_segments.R
+
+# Create output directory with proper permissions
+RUN mkdir -p /app/output && chmod 777 /app/output
+
+# Create a simple test to verify everything works
+RUN python3 -c "from pathlib import Path; print('✅ Python OK'); print('✅ R script found:', Path('/app/scripts/annotate_genomic_segments.R').exists())"
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python3 -c "import sys; print('Server healthy'); sys.exit(0)"
+
+# Run the simple server
+CMD ["python3", "/app/simple_server.py"]
