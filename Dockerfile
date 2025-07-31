@@ -29,7 +29,7 @@ RUN R -e "if (!requireNamespace('BiocManager', quietly = TRUE)) install.packages
 RUN pip install uv
 
 # Copy project files
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock README.md ./
 COPY src/ src/
 COPY scripts/ scripts/
 COPY config/ config/
