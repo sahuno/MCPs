@@ -1,0 +1,36 @@
+{
+  "server": {
+    "name": "annomics-mcp",
+    "version": "1.0.0",
+    "description": "MCP Server for genomic segment annotation",
+    "max_file_size_mb": 100,
+    "timeout_seconds": 300,
+    "cache_results": true,
+    "log_level": "INFO"
+  },
+  "r_environment": {
+    "script_path": "./scripts/annotate_genomic_segments.R",
+    "memory_limit": "8G", 
+    "timeout_seconds": 600,
+    "required_packages": [
+      "annotatr",
+      "GenomicRanges", 
+      "tidyverse",
+      "data.table",
+      "ggplot2",
+      "optparse"
+    ]
+  },
+  "output": {
+    "default_formats": ["png", "pdf"],
+    "max_files_per_batch": 50,
+    "cleanup_temp_files": true,
+    "compress_large_outputs": true
+  },
+  "performance": {
+    "enable_caching": true,
+    "cache_ttl_hours": 24,
+    "max_concurrent_jobs": 3,
+    "memory_limit_mb": 4096
+  }
+}

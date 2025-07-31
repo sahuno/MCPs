@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  annomics-mcp:
+    build: .
+    container_name: annomics-mcp-server
+    volumes:
+      # Mount data directory for input files
+      - ./data:/app/data:ro
+      # Mount output directory
+      - ./output:/app/output:rw
+      # Mount config for customization
+      - ./config:/app/config:ro
+    environment:
+      - LOG_LEVEL=INFO
+      - R_LIBS_USER=/usr/local/lib/R/site-library
+      - PYTHONPATH=/app/src
+    restart: unless-stopped
+    # For stdio mode, no ports needed
+    # ports:
+    #   - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from annomics_mcp.schemas.genome_builds import SupportedGenomes; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add a volume container for data persistence
+  data-volume:
+    image: busybox
+    volumes:
+      - annomics-data:/data
+    command: ["true"]
+
+volumes:
+  annomics-data:
+    driver: local
