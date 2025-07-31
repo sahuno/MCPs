@@ -2,7 +2,7 @@
 name = "annomics-mcp"
 version = "1.0.0"
 description = "MCP Server for genomic segment annotation using annotatr"
-readme = "README_MCP.md"
+readme = "README.md"
 authors = [
     { name = "Samuel Ahuno", email = "ekwame001@gmail.com" }
 ]
