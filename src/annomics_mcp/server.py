@@ -472,7 +472,8 @@ async def main():
             write_stream,
             InitializationOptions(
                 server_name="annomics-mcp",
-                server_version="1.0.0"
+                server_version="1.0.0",
+                capabilities=server.get_capabilities()
             )
         )
 
