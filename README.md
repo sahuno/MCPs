@@ -1,6 +1,8 @@
-# annOmics - Genomic Segment Annotation Tool
+# MCPs - Model Context Protocol Servers
 
-A powerful and flexible R tool for annotating genomic segments from BED files using the annotatr package. Designed for both single-file analysis and high-throughput batch processing of multiple datasets.
+## annOmics - Genomic Segment Annotation MCP Server
+
+A powerful MCP (Model Context Protocol) server for genomic segment annotation, built on top of a flexible R tool using the annotatr package. Provides AI-powered genomic analysis through natural language interfaces with Claude and other AI assistants.
 
 ## Features
 
@@ -265,3 +267,7 @@ Rscript -e "capabilities('cairo')"
 If you use annOmics in your research, please cite:
 - annotatr package: Cavalcante RG, Sartor MA (2017). annotatr: genomic regions in context. Bioinformatics.
 - This tool: [Your publication or GitHub repository]
+
+---
+
+*Part of the MCPs (Model Context Protocol Servers) collection for AI-powered scientific computing.*
